@@ -1,0 +1,11 @@
+# Frontend
+frontend/node_modules/
+frontend/build/
+
+# Backend
+backend/target/
+
+# Common
+*.log
+*.DS_Store
+.env
