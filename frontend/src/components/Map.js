@@ -5,7 +5,10 @@ import 'leaflet/dist/leaflet.css';
 const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelectedParcelInfo, parcels, darkMode, setZoningType }) => {
     
     const [autoMove, setAutoMove]= useState(true);
+    const [hoveredParcelInfo, setHoveredParcelInfo] = useState(null);
+    const [hoveredParcelId, setHoveredParcelId] = useState(null);
 
+    // When user clicks on a parcel
     const parcelSelect = (parcelId) => {
         // Deselecting a parcel
         if (selectedParcels.includes(parcelId)) { 
@@ -26,14 +29,15 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
                         usedesc: lastSelected.usedesc
                     });
                 }
-                // No parcels selected left
+            // No parcels selected left
             } else { 
                 setSelectedParcelInfo(null);
                 setZoningType(null);
             }
 
             setSelectedParcels(updatedSelectedParcels);
-        } else { // Selecting a new parcel
+        // Selecting a new parcel
+        } else {
             const selected = parcels.find(p => p.id === parcelId);
             // Only change zoning type if it's the first selected. For usability
             if(selectedParcels.length === 0){
@@ -53,6 +57,7 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
         }
     };
     
+    // Fly To Functionality
     const FlyToParcel = ({ center }) => {
         const map = useMap();
         if(center) {
@@ -97,28 +102,45 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
                         pathOptions={{
                             color: selectedParcels.includes(parcel.id) 
                                 ? 'blue' 
+                                : hoveredParcelId === parcel.id
+                                ? 'orange'
                                 : (darkMode ? '#87CEEB' : 'gray'),
-                            weight: 2
+                            weight: hoveredParcelId === parcel.id ? 4 : 2
                         }}
                         eventHandlers={{
                             click: () => parcelSelect(parcel.id),
                             mouseover: (e) => {
-                                e.target.setStyle({
-                                    weight: 4,
-                                    color: 'orange',
+                                const center = parcel.coordinates[Math.floor(parcel.coordinates.length / 2)];
+                                setHoveredParcelInfo({
+                                    id: parcel.id,
+                                    zoningType: parcel.zoningType,
+                                    area: parcel.area,
+                                    center: center,
                                 });
-                                },
-                                mouseout: (e) => {
-                                e.target.setStyle({
-                                    weight: 2,
-                                    color: selectedParcels.includes(parcel.id) 
-                                        ? 'blue' 
-                                        : (darkMode ? '#87CEEB' : 'gray'),
-                                });
-                                }
+                                setHoveredParcelId(parcel.id);
+                            },
+                            mouseout: (e) => {
+                                setHoveredParcelInfo(null);
+                                setHoveredParcelId(null);
+                            }
                         }}
                     />
                 ))}
+                {hoveredParcelInfo && (
+                    <div
+                    className={`absolute z-[9999] p-2 rounded-lg shadow-md text-sm font-semibold transition duration-300 transform pointer-events-none
+                        ${darkMode ? 'bg-gray-800 text-white border border-gray-600' : 'bg-white text-black border border-gray-200'}
+                      `}
+                        style={{
+                            left: `50%`,
+                            top: `1%`,
+                        }}
+                    >
+                        <div>Parcel ID: {hoveredParcelInfo.id}</div>
+                        <div>Zoning: {hoveredParcelInfo.zoningType}</div>
+                        <div>Area: {hoveredParcelInfo.area?.toLocaleString(undefined, { maximumFractionDigits: 2 })} m²</div>
+                    </div>
+                )}
             </MapContainer>
         </div>
     )
