@@ -27,8 +27,19 @@ public class ZoningUpdateController {
         int parcelsUpdated = request.getParcelIds().size();
 
         try {
-            zoningUpdateService.updateParcels(parcelIds, zoningType);
-            auditLogService.logZoningUpdate(parcelsUpdated, zoningType);
+            boolean updateSuccess = zoningUpdateService.updateParcels(parcelIds, zoningType);
+            if (!updateSuccess) {
+                return ResponseEntity
+                        .status(500)
+                        .body("Zoning update failed: Unable to write to file.");
+            }
+            boolean auditSuccess = auditLogService.logZoningUpdate(parcelsUpdated, zoningType);
+            if (!auditSuccess) {
+                zoningUpdateService.rollback();
+                return ResponseEntity
+                        .status(500)
+                        .body("Zoning update failed: Unable to log audit.");
+            }
             return ResponseEntity.ok("Zoning update successful.");
         } catch (Exception e) {
             e.printStackTrace();

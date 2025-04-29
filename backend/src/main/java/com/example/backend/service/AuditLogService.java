@@ -20,10 +20,11 @@ public class AuditLogService {
     private final AtomicLong logCounter;
 
     public AuditLogService() {
-        this.logCounter = new AtomicLong(getLastUsedId());
+        this.logCounter = new AtomicLong(getLastId());
     }
 
-    private long getLastUsedId() {
+    // Get the ID of the last log entry
+    private long getLastId() {
         File file = new File(AUDIT_LOG_PATH);
         if (!file.exists()) return 1;
 
@@ -40,24 +41,29 @@ public class AuditLogService {
         } catch (Exception e) {
             System.err.println("Could not read audit log for last ID: " + e.getMessage());
         }
-
         return 1;
     }
 
-    public void logZoningUpdate(int parcelsAffected, String zoningType) {
+    public boolean logZoningUpdate(int parcelsAffected, String zoningType) {
+        FileWriter writer = null;
+        File file = new File(AUDIT_LOG_PATH);
         try {
             AuditLog logEntry = new AuditLog();
             logEntry.setId(logCounter.getAndIncrement());
             logEntry.setAction("Updated " + parcelsAffected + " parcels to zoning type: " + zoningType);
             logEntry.setTimestamp(LocalDateTime.now().toString());
 
-            File file = new File(AUDIT_LOG_PATH);
-            FileWriter writer = new FileWriter(file, true);
+            writer = new FileWriter(file, true);
             writer.write(objectMapper.writeValueAsString(logEntry));
             writer.write("\n");
             writer.close();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            if (writer != null) {
+                try { writer.close(); } catch (Exception ignore) {}
+            }
+            return false;
         }
     }
 }
