@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelectedParcelInfo, parcels, darkMode, setZoningType }) => {
+    
+    const [autoMove, setAutoMove]= useState(true);
 
     const parcelSelect = (parcelId) => {
         // Deselecting a parcel
@@ -71,7 +73,20 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
                     }
                 />
 
-                {selectedParcelInfo && (
+                <div className="absolute bottom-4 left-4 z-[9999]">
+                    <button
+                        onClick={() => setAutoMove(prev => !prev)}
+                        className={`px-3 py-2 rounded-lg shadow-md text-sm font-semibold transition duration-300 ease-in-out transform hover:scale-105 
+                        ${autoMove 
+                            ? 'bg-green-500 text-black hover:bg-green-700' 
+                            : 'bg-red-500 text-black hover:bg-red-700'}
+                        `}
+                    >
+                        Auto-Move: {autoMove ? 'ON' : 'OFF'}
+                    </button>
+                </div>
+
+                {autoMove && selectedParcelInfo && (
                     <FlyToParcel center={[selectedParcelInfo.latitude, selectedParcelInfo.longitude]} />
                 )}
 

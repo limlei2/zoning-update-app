@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 public class AuditLog {
     private Long id;
     private String action;
-    private LocalDateTime timestamp;
+    private String timestamp;
 }
