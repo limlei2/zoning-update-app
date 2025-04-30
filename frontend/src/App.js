@@ -120,7 +120,7 @@ function App() {
 
           {/* Loading Screen */}
           {loading && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50 animate-fade-in">
+            <div className="z-[9999] absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center animate-fade-in">
               <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
               <p className="mt-4 text-white text-xl font-semibold animate-pulse">Loading parcels...</p>
             </div>

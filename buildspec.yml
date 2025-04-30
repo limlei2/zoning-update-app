@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Starting build
+      - cd backend
+  build:
+    commands:
+      - echo Building Docker image
+      - docker build -t zoning-update-backend .
+  post_build:
+    commands:
+      - echo Preparing deployment bundle
+      - cd ..
+      - mkdir -p app
+      - cp Dockerrun.aws.json app/
+      - cp -r backend app/backend
+
+artifacts:
+  files:
+    - app/**/*
+  discard-paths: no
