@@ -14,6 +14,6 @@ phases:
       - cp backend/pom.xml zoning-backend/
 
 artifacts:
-  files:
-    - zoning-backend/**/*
   base-directory: zoning-backend
+  files:
+    - '**/*'
