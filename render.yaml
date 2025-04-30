@@ -3,7 +3,7 @@ services:
     name: zoning-backend
     env: docker
     plan: free
-    dockerfilePath: ./backend/Dockerfile
+    dockerfilePath: backend/Dockerfile
     rootDir: backend
     autoDeploy: true
     envVars:
