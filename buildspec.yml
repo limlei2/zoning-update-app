@@ -3,19 +3,17 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Starting build
+      - echo Preparing Dockerfile-based Elastic Beanstalk deployment
+
   build:
     commands:
-      - echo Building Docker image
-      - docker build -t zoning-update-backend -f backend/Dockerfile .
-  post_build:
-    commands:
-      - echo Preparing deployment bundle
-      - mkdir -p app
-      - cp Dockerrun.aws.json app/
-      - cp -r backend app/backend
+      - echo Moving backend Dockerfile and source to root
+      - mkdir -p zoning-backend
+      - cp backend/Dockerfile zoning-backend/
+      - cp -r backend/src zoning-backend/
+      - cp backend/pom.xml zoning-backend/
 
 artifacts:
   files:
-    - app/**/*
-  discard-paths: no
+    - zoning-backend/**/*
+  base-directory: zoning-backend
