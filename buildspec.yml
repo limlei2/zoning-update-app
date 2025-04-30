@@ -4,11 +4,10 @@ phases:
   pre_build:
     commands:
       - echo Starting build
-      - cd backend
   build:
     commands:
       - echo Building Docker image
-      - docker build -t zoning-update-backend .
+      - docker build -t zoning-update-backend -f backend/Dockerfile .
   post_build:
     commands:
       - echo Preparing deployment bundle

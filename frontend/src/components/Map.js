@@ -62,7 +62,7 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
         const map = useMap();
         if(center) {
             map.flyTo(center, 17, {
-                duration: 1.5
+                duration: 1
             });
         }
         return null;
