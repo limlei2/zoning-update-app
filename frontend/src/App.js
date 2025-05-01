@@ -17,6 +17,7 @@ function App() {
   const [parcels, setParcels] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetches all parcels to display on map
   const fetchParcels = async () => {
@@ -40,8 +41,10 @@ function App() {
 
   // Submit zoning type update request
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     if (!zoningType || selectedParcels.length === 0) {
-      alert("Please select parcels and zoning type!");
+      toast.error("Please select parcels and zoning type!");
+      setIsSubmitting(false);
       return;
     }
 
@@ -58,6 +61,8 @@ function App() {
     } catch (error) {
       console.error('Error updating zoning:', error);
       toast.error("Failed to update zoning.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -191,10 +196,12 @@ function App() {
               </div>
               <div className="flex flex-col mt-4">
                 <button
+                  disabled={isSubmitting}
                   onClick={handleSubmit}
-                  className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition duration-300 ease-in-out transform hover:scale-105"
+                  className={`mt-4 px-4 py-2 text-white rounded-2xl transition duration-300 ease-in-out transform hover:scale-105
+                            ${isSubmitting ? 'bg-blue-300 ' : 'bg-blue-600 hover:bg-blue-700'}`}
                 >
-                  Update Zoning Type
+                  {isSubmitting ? "Updating..." : "Update Zoning Type"}
                 </button>
                 <button
                   onClick={handleClear}

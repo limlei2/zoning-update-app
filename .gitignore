@@ -10,3 +10,7 @@ backend/target/
 *.log
 *.DS_Store
 .env
+
+audit_log.json
+zoning_updates_backup.json
+zoning_updates.json
