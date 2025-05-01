@@ -11,6 +11,7 @@
 
 ### Configuration
 
+#### Frontend
 Create a `.env` file in the `frontend/` directory to manage environment variables securely.
 
 #### `frontend/.env`
@@ -19,16 +20,17 @@ REACT_APP_BACKEND_URL=http://localhost:8080
 REACT_APP_MAPTILER_KEY=your_maptiler_key
 ```
 
-Replace the placeholder variables in `src/main/resources/application.properties` with either hardcoded values or keep ${} syntax to pull from environment variables 
+#### Backend
+Replace the placeholder variables in **application.properties** with either hardcoded values or keep ${} syntax to pull from environment variables 
 
-#### `backend/.env`
+#### `src/main/resources/application.properties`
 ```env
 spring.datasource.url=${DB_URL}
 spring.datasource.username=${DB_USERNAME}
 spring.datasource.password=${DB_PASSWORD}
 ```
 
-Make sure these environment variables are provided via your deployment environment
+Make sure these environment variables are provided via your deployment environment if using the ${} syntax
 
 ### Installation (Backend)
 
