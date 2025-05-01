@@ -45,7 +45,7 @@ Make sure these environment variables are provided via your deployment environme
 ## Assumptions Made
 
 ### Frontend
-- Parcel data will be fetched once on load; no real-time sync or polling is implemented.
+- Parcel data will be fetched only on load or after user submission, polling is not implemented.
 - Only four zoning types are considered: `Residential`, `Commercial`, `Industrial` and `Planned`.
 - Users are able to select multiple parcels of all zoning types and change them all at once to 1 chosen zoning type.
 - The user interface does not require authentication or roles.
