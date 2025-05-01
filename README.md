@@ -47,9 +47,12 @@ The project is deployed across AWS using the following setup:
 
 ### Frontend Deployment (React)
 The React app is built with: `npm run build`
+
 The static files (/build) are deployed to an AWS S3 bucket with static website hosting enabled.
+
 The public URL of the app is: http://zoning-update.s3-website.us-east-2.amazonaws.com
 
 ### Backend Deployment (Spring Boot)
 The backend is built and deployed through AWS CodePipeline.
+
 CodePipeline pulls from GitHub, builds the app using AWS CodeBuild, and deploys it to Elastic Beanstalk.
