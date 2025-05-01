@@ -44,7 +44,19 @@ Make sure these environment variables are provided via your deployment environme
 
 ## Assumptions Made
 
+### Frontend
+- Parcel data will be fetched once on load; no real-time sync or polling is implemented.
+- Only four zoning types are considered: `Residential`, `Commercial`, `Industrial` and `Planned`.
+- Users are able to select multiple parcels of all zoning types and change them all at once to 1 chosen zoning type.
+- The user interface does not require authentication or roles.
+- No frontend form validation required, other than ensuring a zoning type is selected.
+- Users do not have access to the history of changes in zoning types.
 
+### Backend
+- Parcel location and geometry is already stored in the real_estate_zoning table in a PostGIS-compatible format.
+- Each parcel has a unique id and a valid, nonempty zoning type (zoning_typ).
+- All parcel updates are performed in a single database transaction to ensure atomicity.
+- Audit log entries only require a unique id, a timestamp, and a message that includes the number of parcels updated and the new zoning type.
 
 ## Deployment
 The project is deployed across AWS using the following setup:
