@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -7,6 +7,7 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
     const [autoMove, setAutoMove]= useState(true);
     const [hoveredParcelInfo, setHoveredParcelInfo] = useState(null);
     const [hoveredParcelId, setHoveredParcelId] = useState(null);
+    const [flyToTarget, setFlyToTarget] = useState(false);
 
     // When user clicks on a parcel
     const parcelSelect = (parcelId) => {
@@ -38,6 +39,7 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
             setSelectedParcels(updatedSelectedParcels);
         // Selecting a new parcel
         } else {
+            setFlyToTarget(true);
             const selected = parcels.find(p => p.id === parcelId);
             // Only change zoning type if it's the first selected. For usability
             if(selectedParcels.length === 0){
@@ -60,11 +62,12 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
     // Fly To Functionality
     const FlyToParcel = ({ center }) => {
         const map = useMap();
-        if(center) {
-            map.flyTo(center, 17, {
-                duration: 1
-            });
-        }
+        useEffect(() => {
+            if (flyToTarget && center) {
+                map.flyTo(center, 17, { duration: 1 });
+                setFlyToTarget(false);
+            }
+        }, [center, flyToTarget, map]);
         return null;
     };
 
