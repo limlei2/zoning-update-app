@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.model.ParcelData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ParcelService {
 
@@ -23,6 +25,7 @@ public class ParcelService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // Gets all parcel info from the database
     public List<ParcelData> getAllParcels() {
         String sql = "SELECT id, zoning_typ, mailadd, mail_zip, mail_city, usedesc, ST_AsGeoJSON(geom) AS coords, ST_Area(geom::geography) AS area FROM real_estate_zoning";
         List<ParcelData> parcels = new ArrayList<>();
@@ -61,13 +64,14 @@ public class ParcelService {
                 parcels.add(new ParcelData(id, coordinates, zoningType, area, fullAddress, usedesc));
 
             } catch (Exception e) {
-                System.err.println("Error while fetching parcels: " + e.getMessage());
+                log.error("Error while fetching parcels: ", e);
                 throw new RuntimeException("Database error while fetching parcels");
             }
         });
         return parcels;
     }
 
+    // Load updated zoning types from JSON file
     private Map<Integer, String> loadZoningTypes() {
         Map<Integer, String> updatedZonings = new HashMap<>();
         try {
@@ -81,7 +85,7 @@ public class ParcelService {
                 });
             }
         } catch (IOException e) {
-            System.err.println("Error reading zoning_updates.json: " + e.getMessage());
+            log.error("Error reading zoning_updates.json: ", e);
         }
         return updatedZonings;
     }

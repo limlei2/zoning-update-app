@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ZoningUpdateService {
 
@@ -20,6 +22,7 @@ public class ZoningUpdateService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // Update the zoning type of parcels into zoning_updates.json
     public boolean updateParcels(List<Integer> parcelIds, String newZoningType) {
         File tempFile = new File(ZONING_UPDATE_TEMP_PATH);
         File originalFile = new File(ZONING_UPDATE_PATH);
@@ -43,11 +46,12 @@ public class ZoningUpdateService {
             Files.move(tempFile.toPath(), originalFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (IOException e) {
-            System.err.println("Warning: Zoning updates file exists but couldn't be read. Starting fresh.");
+            log.error("Zoning update failed: ", e);
             return false;
         }
     }
 
+    // Rollback the zoning update by restoring the backup file
     public void rollback() {
         File originalFile = new File(ZONING_UPDATE_PATH);
         File backupFile = new File(BACKUP_PATH);
@@ -58,7 +62,7 @@ public class ZoningUpdateService {
                 System.out.println("Rollback succeeded: zoning update reverted.");
             }
         } catch (IOException e) {
-            System.err.println("Rollback failed: " + e.getMessage());
+            log.error("Rollback failed: ", e);
         }
     }
 }

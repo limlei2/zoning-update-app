@@ -3,12 +3,14 @@ package com.example.backend.controller;
 import com.example.backend.model.ZoningUpdateRequest;
 import com.example.backend.service.AuditLogService;
 import com.example.backend.service.ZoningUpdateService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
@@ -34,6 +36,7 @@ public class ZoningUpdateController {
                         .body("Zoning update failed: Unable to write to file.");
             }
             boolean auditSuccess = auditLogService.logZoningUpdate(parcelsUpdated, zoningType);
+            // If audit logging fails, rollback the zoning update
             if (!auditSuccess) {
                 zoningUpdateService.rollback();
                 return ResponseEntity
@@ -42,7 +45,7 @@ public class ZoningUpdateController {
             }
             return ResponseEntity.ok("Zoning update successful.");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to update zoning", e);
             return ResponseEntity
                     .status(500)
                     .body("Zoning update failed: " + e.getMessage());

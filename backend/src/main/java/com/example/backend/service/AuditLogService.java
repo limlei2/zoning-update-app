@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.model.AuditLog;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Slf4j
 @Service
 public class AuditLogService {
 
@@ -38,11 +40,12 @@ public class AuditLogService {
                 return lastLog.getId() + 1;
             }
         } catch (Exception e) {
-            System.err.println("Could not read audit log for last ID: " + e.getMessage());
+            log.error("Could not read audit log for last ID: ", e);
         }
         return 1;
     }
 
+    // Logs an entry of the zoning update
     public boolean logZoningUpdate(int parcelsAffected, String zoningType) {
         FileWriter writer = null;
         File file = new File(AUDIT_LOG_PATH);
@@ -58,7 +61,7 @@ public class AuditLogService {
             writer.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to log audit entry: ", e);
             if (writer != null) {
                 try { writer.close(); } catch (Exception ignore) {}
             }
