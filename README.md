@@ -66,11 +66,11 @@ The backend is containerized using Docker and deployed via AWS CodePipeline.
 2. **CodePipeline & CodeBuild**:
    - AWS CodePipeline is triggered when changes are pushed to GitHub.
    - CodeBuild uses `buildspec.yml` to:
-     - Create a new directory zoning-backend and copies Dockerfile and backend source code
+     - Create a new directory `zoning-backend` and copies Dockerfile and backend source code
      - Exports it as a zipped artifact for deployment
 
 3. **Elastic Beanstalk Deployment**:
    - Elastic Beanstalk is set up as a Docker single-container environment.
-   - It receives the zipped zoning-backend/ artifact from CodeBuild.
+   - It receives the zipped `zoning-backend/` artifact from CodeBuild.
    - Beanstalk uses the Dockerfile to build and run the backend in an EC2-managed container.
    - Environment variables are configured in the Elastic Beanstalk environment console.
