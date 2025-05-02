@@ -1,4 +1,4 @@
-# Zonig Update App
+# Zoning Update App
 
 ## Getting Started
 
@@ -55,8 +55,13 @@ Make sure these environment variables are provided via your deployment environme
 ### Backend
 - Parcel location and geometry is already stored in the real_estate_zoning table in a PostGIS-compatible format.
 - Each parcel has a unique id and a valid, nonempty zoning type (zoning_typ).
-- All parcel updates are performed in a single database transaction to ensure atomicity.
+- Parcel zoning updates are atomic within a single user submission.
+
+### Assumptions made that led to the use of a JSON file storage system
 - Audit log entries only require a unique id, a timestamp, and a message that includes the number of parcels updated and the new zoning type.
+- No need for advanced querying or filtering in either of the stored data.
+- Audit log size and zoning updates file expected to remain reasonably small.
+- Simplified deployment for demo purposes.
 
 ## Deployment
 The project is deployed across AWS using the following setup:
