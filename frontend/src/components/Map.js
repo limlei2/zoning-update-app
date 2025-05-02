@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelectedParcelInfo, parcels, darkMode, setZoningType }) => {
+const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelectedParcelInfo, parcels, darkMode, setZoningType, showPanel, setShowPanel }) => {
     
     const [autoMove, setAutoMove]= useState(true);
     const [hoveredParcelInfo, setHoveredParcelInfo] = useState(null);
@@ -32,6 +32,7 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
                 }
             // No parcels selected left
             } else { 
+                setShowPanel(false);
                 setSelectedParcelInfo(null);
                 setZoningType(null);
             }
@@ -39,6 +40,7 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
             setSelectedParcels(updatedSelectedParcels);
         // Selecting a new parcel
         } else {
+            setShowPanel(true);
             setFlyToTarget(true);
             const selected = parcels.find(p => p.id === parcelId);
             // Only change zoning type if it's the first selected. For usability
@@ -71,9 +73,23 @@ const Map = ({ selectedParcels, setSelectedParcels, selectedParcelInfo, setSelec
         return null;
     };
 
+    // Resizes map based on when user opens or closes the information panel
+    const ResizeMap = ({showPanel}) => {
+        const map = useMap();
+      
+        useEffect(() => {
+          setTimeout(() => {
+            map.invalidateSize();
+          }, 300);
+        }, [showPanel]);
+      
+        return null;
+    };
+
     return (
         <div className="w-full h-full">
             <MapContainer className="h-full w-full" center={[32.964713, -96.791278]} zoom={15}>
+                <ResizeMap showPanel={showPanel}/>
                 <TileLayer
                     url={darkMode
                         ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${process.env.REACT_APP_MAPTILER_KEY}`
