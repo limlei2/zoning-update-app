@@ -1,5 +1,7 @@
 # Zoning Update App
 
+Deployed on http://zoning-update.s3-website.us-east-2.amazonaws.com
+
 ## Getting Started
 
 ### Prerequisites
